@@ -9,7 +9,10 @@ var busControl = Bus.Factory.CreateUsingRabbitMq(cfg =>
     cfg.ReceiveEndpoint("order-created-event", e =>
     {
         e.Consumer<OrderCreatedConsumer>();
+        e.PrefetchCount = 1;
     });
+
+    
 });
 
 await busControl.StartAsync(new CancellationToken());
