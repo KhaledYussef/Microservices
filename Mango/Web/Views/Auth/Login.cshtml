@@ -1,0 +1,34 @@
+﻿@model LoginDTO
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Please sign in</h3>
+                </div>
+                <div class="panel-body">
+                    <form asp-action="Login" asp-controller="Auth" method="post">
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        <fieldset>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="E-mail" asp-for="Email" type="text" autofocus>
+                                <span class="text-danger">@ViewData.ModelState["Email"]?.Errors?.FirstOrDefault()?.ErrorMessage</span>
+                            </div>
+                            <div class="form-group ">
+                                <input class="form-control" placeholder="Password" asp-for="Password" type="password">
+                                <span class="text-danger">@ViewData.ModelState["Password"]?.Errors?.FirstOrDefault()?.ErrorMessage</span>
+                            </div>
+                            <input type="submit" class="btn btn-lg btn-success btn-block" value="Login" />
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,48 @@
+﻿@model RegisterDTO
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Please sign in</h3>
+                </div>
+                <div class="panel-body">
+                    <form asp-action="Register" asp-controller="Auth" method="post">
+                        <fieldset>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="Name" asp-for="Name" autofocus>
+                                <span class="text-danger">@ViewData.ModelState["Name"]?.Errors?.FirstOrDefault()?.ErrorMessage</span>
+                            </div>
+                            <div class="form-group">
+                                <input class="form-control" placeholder="E-mail" asp-for="Email">
+                                <span class="text-danger">@ViewData.ModelState["Email"]?.Errors?.FirstOrDefault()?.ErrorMessage</span>
+                            </div>
+                            <div class="form-group ">
+                                <input class="form-control" placeholder="Password" asp-for="Password" type="password" value="">
+                                <span class="text-danger">@ViewData.ModelState["Password"]?.Errors?.FirstOrDefault()?.ErrorMessage</span>
+                            </div>
+                            <div class="form-group ">
+                                <input class="form-control" placeholder="Phone" asp-for="Phone">
+                                <span class="text-danger">@ViewData.ModelState["Phone"]?.Errors?.FirstOrDefault()?.ErrorMessage</span>
+                            </div> 
+                            
+                            <div class="form-group ">
+                                <select class="form-control" asp-for="Role" asp-items="ViewBag.Roles">
+
+                                </select>
+                                <span class="text-danger">@ViewData.ModelState["Phone"]?.Errors?.FirstOrDefault()?.ErrorMessage</span>
+                            </div>
+                            <input type="submit" class="btn btn-lg btn-success btn-block" value="Register" />
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
