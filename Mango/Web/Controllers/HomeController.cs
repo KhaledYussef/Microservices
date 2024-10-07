@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Newtonsoft.Json;
 
 using System.Diagnostics;
+using System.Security.Claims;
 
 using Web.Models;
 using Web.Services;
@@ -13,11 +15,13 @@ namespace Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IProductService _ProductService;
+        private readonly ICartService _cartService;
 
-        public HomeController(ILogger<HomeController> logger, IProductService productService)
+        public HomeController(ILogger<HomeController> logger, IProductService productService, ICartService cartService)
         {
             _logger = logger;
             _ProductService = productService;
+            _cartService = cartService;
         }
 
         public async Task<IActionResult> Index()
@@ -50,6 +54,41 @@ namespace Web.Controllers
             }
 
             return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ActionName("Details")]
+        public async Task<IActionResult> Details(ProductDto productDto)
+        {
+            CartDTO cartDto = new CartDTO()
+            {
+                    UserId = User.Claims.Where(u => u.Type == ClaimTypes.Name)?.FirstOrDefault()?.Value
+                
+            };
+
+            CartDetailDTO cartDetails = new CartDetailDTO()
+            {
+                Count = productDto.Count,
+                ProductId = productDto.Id,
+            };
+
+            List<CartDetailDTO> cartDetailsDtos = new() { cartDetails };
+            cartDto.Items = cartDetailsDtos;
+
+            ResponseResult? response = await _cartService.UpsertCartAsync(cartDto);
+
+            if (response != null && response.IsSuccess)
+            {
+                TempData["success"] = "Item has been added to the Shopping Cart";
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                TempData["error"] = response?.Message;
+            }
+
+            return View(productDto);
         }
 
         public IActionResult Privacy()

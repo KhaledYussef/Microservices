@@ -26,12 +26,16 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddHttpClient<IProductService, ProductService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
+builder.Services.AddHttpClient<ICartService, CartService>();
+builder.Services.AddScoped<ICartService, CartService>();
+
 builder.Services.AddScoped<IHttpService, HttpService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 Shared.CouponApi = builder.Configuration["ServiceUrls:CouponApi"]!;
 Shared.AuthApi = builder.Configuration["ServiceUrls:AuthApi"]!;
 Shared.ProductApi = builder.Configuration["ServiceUrls:ProductApi"]!;
+Shared.CartApi = builder.Configuration["ServiceUrls:CartApi"]!;
 
 
 
