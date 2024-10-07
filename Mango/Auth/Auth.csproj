@@ -18,6 +18,10 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.8.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MessageBus\MessageBus.csproj" />
+  </ItemGroup>
   
 
 </Project>

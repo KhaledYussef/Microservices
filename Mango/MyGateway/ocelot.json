@@ -1,0 +1,23 @@
+{
+  //"CouponApi": "https://localhost:7001",
+  //"AuthApi": "https://localhost:7002",
+  //"ProductApi": "https://localhost:7000",
+  //"CartApi": "https://localhost:7003",
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/api/products",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/products",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7000
+        }
+      ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7777"
+  }
+}

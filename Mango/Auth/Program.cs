@@ -2,6 +2,8 @@ using Auth.Data;
 using Auth.Models;
 using Auth.Services;
 
+using MessageBus;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +28,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IMessageBus, AzureMessageBus>();
 
 
 

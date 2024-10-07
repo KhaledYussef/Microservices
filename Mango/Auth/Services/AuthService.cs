@@ -1,6 +1,8 @@
 ﻿using Auth.Data;
 using Auth.Models;
 
+using MessageBus;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -17,18 +19,21 @@ namespace Auth.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtOptions _jwtOptions;
+        private readonly IMessageBus _messageBus;
 
 
 
         public AuthService(UserManager<ApplicationUser> userManager,
             AppDbContext db,
             RoleManager<IdentityRole> roleManager,
-            IOptions<JwtOptions> jwtOptions)
+            IOptions<JwtOptions> jwtOptions,
+            IMessageBus messageBus)
         {
             _userManager = userManager;
             _db = db;
             _roleManager = roleManager;
             _jwtOptions = jwtOptions.Value;
+            _messageBus = messageBus;
         }
 
         public async Task<LoginResponseDTO?> Login(LoginDTO loginDTO)
@@ -104,6 +109,11 @@ namespace Auth.Services
                 }
 
                 await _userManager.AddToRoleAsync(user, role.Name ?? "CUSTOMER");
+
+                // send message to message bus
+                await _messageBus.Publish(user.Email, "registeruser");
+
+
 
                 return null;
             }

@@ -1,10 +1,14 @@
 using AutoMapper;
 
+using MessageBus;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 using ShoppingCartApi;
 using ShoppingCartApi.Data;
+using ShoppingCartApi.Services;
+using ShoppingCartApi.Util;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +48,25 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<BackendApiAuthHttpClientHandler>();
+
+builder.Services.AddHttpClient("Product", client => { 
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:ProductApi"] ??"");
+}).AddHttpMessageHandler<BackendApiAuthHttpClientHandler>();
+
+builder.Services.AddHttpClient("Coupon", client => { 
+    client.BaseAddress = new Uri(builder.Configuration["ServiceUrls:CouponApi"] ??"");
+}).AddHttpMessageHandler<BackendApiAuthHttpClientHandler>();
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICouponService, CouponService>();
+builder.Services.AddScoped<IMessageBus, AzureMessageBus>();
+
+
+
+
 
 
 // Add AutoMapper
