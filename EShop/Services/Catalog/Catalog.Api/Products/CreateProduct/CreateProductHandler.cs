@@ -37,7 +37,7 @@
     /// <summary>
     /// Handler for the <see cref="CreateProductCommand"/>.
     /// </summary>
-    internal class CreateProductCommandHandler(IDocumentSession session, IValidator<CreateProductCommand> validator)
+    internal class CreateProductCommandHandler(IDocumentSession session)
         : ICommandHandler<CreateProductCommand, CreateProductResult>
     {
         /// <summary>
@@ -49,13 +49,6 @@
         /// <exception cref="ValidationException">Thrown when the command validation fails.</exception>
         public async Task<CreateProductResult> Handle(CreateProductCommand command, CancellationToken cancellationToken)
         {
-            var validate = await validator.ValidateAsync(command, cancellationToken);
-            if (!validate.IsValid)
-            {
-                var errors = validate.Errors.Select(x => x.ErrorMessage);
-                throw new ValidationException(errors.FirstOrDefault());
-            }
-
             var product = new Product
             {
                 Name = command.Name,
@@ -71,4 +64,9 @@
             return new CreateProductResult(product.Id);
         }
     }
+
+
+
+
+
 }
