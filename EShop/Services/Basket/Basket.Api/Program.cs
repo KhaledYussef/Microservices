@@ -1,7 +1,9 @@
+using Basket.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCarter();
+
 builder.Services.AddMediatR(c =>
 {
     c.RegisterServicesFromAssemblies(typeof(Program).Assembly);
@@ -12,27 +14,25 @@ builder.Services.AddMediatR(c =>
 builder.Services.AddValidatorsFromAssembly(typeof(Program).Assembly);
 
 
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
 // Marten
 builder.Services.AddMarten(a =>
 {
     a.Connection(builder.Configuration.GetConnectionString("Database")!);
+    a.Schema.For<ShoppingCart>().Identity(x => x.UserName).UseOptimisticConcurrency(true);
 })
 .UseLightweightSessions();
-
-if (builder.Environment.IsDevelopment())
-    builder.Services.InitializeMartenWith<CatalogInitialData>();
-
-
-
-
-builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
 builder.Services.AddHealthChecks()
     .AddNpgSql(builder.Configuration.GetConnectionString("Database")!);
 
+builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
 
+//===========================================================
 var app = builder.Build();
+
 
 app.MapCarter();
 
@@ -43,6 +43,5 @@ app.UseHealthChecks("/health",
     {
         ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
     });
-
 
 app.Run();
